@@ -405,7 +405,7 @@ inp>>nums[i].key>>nums[i].count;
 inp.close();
 root=arraytobst(nums,n);
 cout<<"Tree Built\n";
-
+/*
 increase (root,350 ,100);
 reduce (root,350, 50);
 count (root,350);
@@ -426,9 +426,7 @@ previous (root,350);
 reduce (root,271, 3);
 previous (root,350);
 previous (root,150);
-
-
-/*
+*/
 string command;
 while(1) {
 cin>>command;
@@ -468,6 +466,5 @@ previous(root,in1);
 }
 
 }
-*/
 return 0;
 }
