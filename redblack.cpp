@@ -46,76 +46,76 @@ return root;
 //is used as reference for insert, delete operations related to  RedBlack Tree.
 
 //Left Rotate
-void leftrotate(node_ptr *root, node_ptr x) {
-node_ptr y = x->right;
-x->right = y->left;
-if (y->left != &NIL)
-y->left->p = x;
-y->p = x->p;
-if (x->p == &NIL)
-*root = y;
-else if (x->p->left == x)
-x->p->left = y;
+void leftrotate(node_ptr *root, node_ptr par) {
+node_ptr right = par->right;
+par->right = right->left;
+if (right->left != &NIL)
+right->left->p = par;
+right->p = par->p;
+if (par->p == &NIL)
+*root = right;
+else if (par->p->left == right )
+par->p->left = right;
 else
-x->p->right = y;
-y->left = x;
-x->p = y;
+par->p->right = right;
+right->left = par;
+par->p = right;
 }
 
 //Rigth Rotate Function
-void rightrotate(node_ptr *root, node_ptr y) {
-node_ptr x = y->left;
-y->left = x->right;
-if (x->right != &NIL)
-x->right->p = y;
-x->p = y->p;
-if (y->p == &NIL)
-*root = x;
-else if (y->p->left == y)
-y->p->left = x;
+void rightrotate(node_ptr *root, node_ptr par) {
+node_ptr left = par->left;
+par->left = left->right;
+if (left->right != &NIL)
+left->right->p = par;
+left->p = par->p;
+if (par->p == &NIL)
+*root = left;
+else if (par->p->left == par )
+par->p->left = left;
 else
-y->p->right = x;
-x->right = y;
-y->p = x;
+par->p->right = left;
+left->right = par;
+par->p = left;
 }
 
 //Red Black FixUp Function
-void rbinsertfixup(node_ptr *root, node_ptr z) {
-while (z->p->color == RED) {
-if (z->p == z->p->p->left) {
-node_ptr y = z->p->p->right;
-if (y->color == RED) {
-z->p->color = BLACK;
-y->color = BLACK;
-z->p->p->color = RED;
-z = z->p->p;
+void rbinsertfixup(node_ptr *root, node_ptr new_node) {
+while (new_node->p->color == RED) {
+if (new_node->p == new_node->p->p->left) {
+node_ptr uncle = new_node->p->p->right;
+if (uncle->color == RED) {
+new_node->p->color = BLACK;
+uncle->color = BLACK;
+new_node->p->p->color = RED;
+new_node = new_node->p->p;
 }
 else {
-if (z == z->p->right) {
-z = z->p;
-leftrotate(root,z);
+if (new_node == new_node->p->right) {
+new_node = new_node->p;
+leftrotate(root,new_node);
 }
-z->p->color = BLACK;
-z->p->p->color = RED;
-rightrotate(root,z->p->p);
+new_node->p->color = BLACK;
+new_node->p->p->color = RED;
+rightrotate(root,new_node->p->p);
 }
-}
-else {
-node_ptr y = z->p->p->left;
-if (y->color == RED) {
-z->p->color = BLACK;
-y->color = BLACK;
-z->p->p->color = RED;
-z = z->p->p;
 }
 else {
-if (z == z->p->left) {
-z = z->p;
-rightrotate(root,z);
+node_ptr uncle = new_node->p->p->left;
+if (uncle->color == RED) {
+new_node->p->color = BLACK;
+uncle->color = BLACK;
+new_node->p->p->color = RED;
+new_node = new_node->p->p;
 }
-z->p->color = BLACK;
-z->p->p->color = RED;
-leftrotate(root,z->p->p);
+else {
+if (new_node == new_node->p->left) {
+new_node = new_node->p;
+rightrotate(root,new_node);
+}
+new_node->p->color = BLACK;
+new_node->p->p->color = RED;
+leftrotate(root,new_node->p->p);
 }
 }
 }
@@ -123,26 +123,26 @@ leftrotate(root,z->p->p);
 }
 
 //Red Black Insert Function
-void rbinsert(node_ptr *root, node z) {
+void rbinsert(node_ptr *root, node new_node) {
 node_ptr tmp = (node_ptr) new node;
-tmp->key = z.key;
-tmp->count = z.count;
-node_ptr y = &NIL;
-node_ptr x = *root;
-while (x != &NIL) {
-y = x;
-if (tmp->key < x->key)
-x = x->left;
+tmp->key = new_node.key;
+tmp->count = new_node.count;
+node_ptr x_old = &NIL;
+node_ptr par = *root;
+while (par != &NIL) {
+x_old = par;
+if (tmp->key < par->key)
+par = par->left;
 else
-x = x->right;
+par = par->right;
 }
-tmp->p = y;
-if (y == &NIL)
+tmp->p = x_old;
+if (x_old == &NIL)
 *root = tmp;
-else if (tmp->key < y->key)
-y->left = tmp;
+else if (tmp->key < x_old->key)
+x_old->left = tmp;
 else
-y->right = tmp;
+x_old->right = tmp;
 tmp->left = &NIL;
 tmp->right = &NIL;
 tmp->color = RED;
