@@ -305,13 +305,15 @@ cout << tmp->count << "\n";
 node_ptr next(node_ptr root,int id) {
 node_ptr prev = NULL;
 while(root != &NIL) {
-if(root->key > id) {
-//record the last max value
-prev=root;
-root=root->left;
+if(root->key <=id) {
+//go right
+root=root->right;
 }
 else {
-root=root->right;
+//record the last max value
+prev=root;
+//go left
+root=root->left;
 }
 }
 return prev;
@@ -321,8 +323,10 @@ return prev;
 void nextwrapper(node_ptr root,int id) {
 node_ptr res = NULL;
 res = next(root,id);
+//if next exists print it
 if(res)
 cout << res->key << " "<< res->count << "\n";
+//else print 0 0
 else
 cout << 0 << " " << 0 << "\n";
 }
@@ -332,13 +336,15 @@ cout << 0 << " " << 0 << "\n";
 node_ptr previous(node_ptr root,int id) {
 node_ptr prev = NULL;
 while(root != &NIL) {
-if(root->key >= id) {
-root = root->left;
-}
-else {
+if(root->key < id) {
 //record last min value
 prev = root;
+//go right
 root = root->right;
+}
+else {
+//go left
+root = root->left;
 }
 }
 return prev;
@@ -348,8 +354,10 @@ return prev;
 void prevwrapper(node_ptr root,int id) {
 node_ptr res = NULL;
 res = previous(root,id);
+//if found print it
 if(res)
 cout << res->key << " " << res->count << "\n";
+//not found print 0 0
 else
 cout << 0 <<" "<< 0 <<"\n";
 }
