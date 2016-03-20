@@ -1,2 +1,5 @@
 all:
-	gcc -o bbst redblack.cpp
+	@g++ -o bbst redblack.cpp
+
+clean:
+	@rm bbst

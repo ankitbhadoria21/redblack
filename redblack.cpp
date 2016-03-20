@@ -36,12 +36,14 @@ else
 return search(root->right, k);
 }
 
+//find minimum element in the tree
 node_ptr tree_minimum(node_ptr root) {
 while (root->left != NILPTR)
 root = root->left;
 return root;
 }
 
+//find maximum element in the tree
 node_ptr tree_maximum(node_ptr root) {
 while (root->right != NILPTR)
 root = root->right;
@@ -279,6 +281,7 @@ tmp->count-=value;
 if(tmp->count <= 0) {
 rbdelete(&root,id);
 cout << 0 << "\n";
+return ;
 }
 cout<< tmp->count << "\n";
 }
@@ -294,45 +297,53 @@ cout << tmp->count << "\n";
 
 }
 
-void next(node_ptr root, int id) {
-node_ptr temp = search(root, id);
-
-if (temp == NILPTR) {
-cout <<0 << " " << 0 << "\n";
-return;
+node_ptr next(node_ptr root,int val) {
+node_ptr prev=NULL;
+while(root!=NILPTR) {
+if(root->key > val) {
+//record the last max value
+prev=root;
+root=root->left;
 }
-if (temp->right != NILPTR)
-{
-node_ptr tmp;
-tmp = tree_minimum(temp->right);
-cout << tmp->key <<" "<< tmp->count << endl;
-return;
+else {
+root=root->right;
 }
-node_ptr y = temp->p;
-while (y != NILPTR && temp == y->right) {
-temp = y;
-y = y->p;
 }
-cout << y->key <<" "<< y->count << "\n";
+return prev;
 }
 
-void previous(node_ptr root, int id) {
-node_ptr temp = search(root, id);
-if (temp == NILPTR) {
+void nextwrapper(node_ptr root,int val) {
+node_ptr res = NULL;
+res = next(root,val);
+if(res)
+cout << res->key << " "<< res->count << "\n";
+else
 cout << 0 << " " << 0 << "\n";
-return;
 }
-if (temp->left != NILPTR) {
-node_ptr tmp = tree_maximum(temp->left);
-cout << tmp->key <<" "<< tmp->count << "\n";
-return;
+
+
+node_ptr previous(node_ptr root,int val) {
+node_ptr prev = NULL;
+while(root != NILPTR) {
+if(root->key >= val) {
+root = root->left;
 }
-node_ptr y = temp->p;
-while (y != NILPTR && temp == y->left) {
-temp = y;
-y = y->p;
+else {
+//record last min value
+prev = root;
+root = root->right;
 }
-cout << y->key <<" "<< y->count << "\n";
+}
+return prev;
+}
+
+void prevwrapper(node_ptr root,int val) {
+node_ptr res = NULL;
+res = previous(root,val);
+if(res)
+cout << res->key << " " << res->count << "\n";
+else
+cout << 0 <<" "<< 0 <<"\n";
 }
 
 void inrange(node_ptr root,int id1,int id2,int &count) {
@@ -404,29 +415,7 @@ inp>>nums[i].key>>nums[i].count;
 }
 inp.close();
 root=arraytobst(nums,n);
-cout<<"Tree Built\n";
-/*
-increase (root,350 ,100);
-reduce (root,350, 50);
-count (root,350);
-rangewrapper(root, 300, 1000);
-rangewrapper(root,200, 299);
-rangewrapper(root,200 ,1000);
-rangewrapper(root,300, 349);
-rangewrapper(root,350, 350);
-rangewrapper(root,349, 350);
-next (root,300);
-next (root,349);
-next (root,360);
-previous (root,360);
-previous (root,350);
-previous (root,0);
-reduce (root,271, 6);
-previous (root,350);
-reduce (root,271, 3);
-previous (root,350);
-previous (root,150);
-*/
+
 string command;
 while(1) {
 cin>>command;
@@ -457,12 +446,12 @@ rangewrapper(root,in1,in2);
 else if(command=="next") {
 int in1;
 cin>>in1;
-next(root,in1);
+nextwrapper(root,in1);
 }
 else if(command=="previous") {
 int in1;
 cin>>in1;
-previous(root,in1);
+prevwrapper(root,in1);
 }
 
 }
