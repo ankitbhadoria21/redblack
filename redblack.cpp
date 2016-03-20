@@ -159,100 +159,100 @@ u->p->right = v;
 v->p = u->p;
 }
 
-//Delete FixUp Function as given in Introduction to Algorithms
-void rbdeletefixup(node_ptr *root, node_ptr x) {
-while (x != *root && x->color == BLACK) {
-if (x == x->p->left) {
-node_ptr w = x->p->right;
-if (w->color == RED) {
-w->color = BLACK;
-x->p->color = RED;
-leftrotate(root,x->p);
-w = x->p->right;
+//Delete FixUp Function to Fix any red black property violated by deletion
+void rbdeletefixup(node_ptr *root, node_ptr node_fix) {
+while (node_fix != *root && node_fix->color == BLACK) {
+if (node_fix == node_fix->p->left) {
+node_ptr sibling = node_fix->p->right;
+if (sibling->color == RED) {
+sibling->color = BLACK;
+node_fix->p->color = RED;
+leftrotate(root,node_fix->p);
+sibling = node_fix->p->right;
 }
-if (w->left->color == BLACK && w->right->color == BLACK) {
-w->color = RED;
-x = x->p;
-}
-else {
-if (w->right->color == BLACK) {
-w->left->color = BLACK;
-w->color = RED;
-rightrotate(root,w);
-w = x->p->right;
-}
-w->color = x->p->color;
-x->p->color = BLACK;
-w->right->color = BLACK;
-leftrotate(root,x->p);
-x = *root;
-}
+if (sibling->left->color == BLACK && sibling->right->color == BLACK) {
+sibling->color = RED;
+node_fix = node_fix->p;
 }
 else {
-node_ptr w = x->p->left;
-if (w->color == RED) {
-w->color = BLACK;
-x->p->color = RED;
-rightrotate(root,x->p);
-w = x->p->left;
+if (sibling->right->color == BLACK) {
+sibling->left->color = BLACK;
+sibling->color = RED;
+rightrotate(root,sibling);
+sibling = node_fix->p->right;
 }
-if (w->left->color == BLACK && w->right->color == BLACK) {
-w->color = RED;
-x = x->p;
+sibling->color = node_fix->p->color;
+node_fix->p->color = BLACK;
+sibling->right->color = BLACK;
+leftrotate(root,node_fix->p);
+node_fix = *root;
+}
 }
 else {
-if (w->left->color == BLACK) {
-w->right->color = BLACK;
-w->color = RED;
-leftrotate(root,w);
-w = x->p->left;
+node_ptr sibling = node_fix->p->left;
+if (sibling->color == RED) {
+sibling->color = BLACK;
+node_fix->p->color = RED;
+rightrotate(root,node_fix->p);
+sibling = node_fix->p->left;
 }
-w->color = x->p->color;
-x->p->color = BLACK;
-w->left->color = BLACK;
-rightrotate(root,x->p);
-x = *root;
+if (sibling->left->color == BLACK && sibling->right->color == BLACK) {
+sibling->color = RED;
+node_fix = node_fix->p;
+}
+else {
+if (sibling->left->color == BLACK) {
+sibling->right->color = BLACK;
+sibling->color = RED;
+leftrotate(root,sibling);
+sibling = node_fix->p->left;
+}
+sibling->color = node_fix->p->color;
+node_fix->p->color = BLACK;
+sibling->left->color = BLACK;
+rightrotate(root,node_fix->p);
+node_fix = *root;
 }
 }
 }
-x->color = BLACK;
+node_fix->color = BLACK;
 }
 
 //Red Black Delete function
-void rbdelete(node_ptr *root, int z) {
-node_ptr tmp = search(*root, z);
+void rbdelete(node_ptr *root, int node_del) {
+node_ptr tmp = search(*root, node_del);
 if (tmp == &NIL) {
 return;
 }
-node_ptr y = tmp;
-int y_orig_color = y->color;
-node_ptr x;
+node_ptr node_old = tmp;
+int node_orig_color = node_old->color;
+node_ptr node_child;
 if (tmp->left == &NIL) {
-x = tmp->right;
+node_child = tmp->right;
 rbtransplant(root,tmp,tmp->right);
 }
 else if (tmp->right == &NIL) {
-x = tmp->left;
+node_child = tmp->left;
 rbtransplant(root,tmp,tmp->left);
 }
 else {
-y = tree_minimum(tmp->right);
-y_orig_color = y->color;
-x = y->right;
-if (y->p == tmp)
-x->p = y;
+node_old = tree_minimum(tmp->right);
+node_orig_color = node_old->color;
+node_child = node_old->right;
+if (node_old->p == tmp)
+node_child->p = node_old;
 else {
-rbtransplant(root,y,y->right);
-y->right = tmp->right;
-y->right->p = y;
+rbtransplant(root,node_old,node_old->right);
+node_old->right = tmp->right;
+node_old->right->p = node_old;
 }
-rbtransplant(root,tmp,y);
-y->left = tmp->left;
-y->left->p = y;
-y->color = tmp->color;
+rbtransplant(root,tmp,node_old);
+node_old->left = tmp->left;
+node_old->left->p = node_old;
+node_old->color = tmp->color;
 }
-if (y_orig_color == BLACK)
-rbdeletefixup(root,x);
+if (node_orig_color == BLACK)
+rbdeletefixup(root,node_child);
 }
 
 //Increase the value of entry with key 'id' by 'value'
