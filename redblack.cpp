@@ -389,7 +389,7 @@ inrange(root,id1,id2,count);
 cout << count << "\n";
 }
 
-//color last node as red as it will be the only one which is partially filled
+//color last level as red as it will be the only one which is partially filled
 void color_tree(node *root,int level,int num) {
 if(root == &NIL) return;
 if(level == ceil(log2((double)num))) root->color = RED;
