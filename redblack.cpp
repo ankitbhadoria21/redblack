@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
+#include <cmath>
 #define RED	1
 #define BLACK	0
 
@@ -388,14 +389,14 @@ inrange(root,id1,id2,count);
 cout << count << "\n";
 }
 
-void color_tree(node *root,int level) {
+//color last node as red as it will be the only one which is partially filled
+void color_tree(node *root,int level,int num) {
 if(root == &NIL) return;
-//color every odd level as Red
-if(level&1) root->color = RED;
+if(level == ceil(log2((double)num))) root->color = RED;
 //Go Left
-color_tree(root->left,level+1);
+color_tree(root->left,level+1,num);
 //Go Right
-color_tree(root->right,level+1);
+color_tree(root->right,level+1,num);
 }
 
 //Function which converts array to binary search tree
@@ -422,7 +423,7 @@ node* arraytobst(node* nums,int n) {
 if(n == 0) return NULL;
 
 node *root = convert(nums,0,n-1,NULL);
-color_tree(root,0);
+color_tree(root,0,n);
 return root;
 }
 
