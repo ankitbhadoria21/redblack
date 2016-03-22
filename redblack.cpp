@@ -10,23 +10,23 @@ using namespace std;
 //node struct having required fields like key,color,count etc
 struct node {
 int key;
-struct node *left, *right, *p;
 int color;
 int count;
+struct node *left, *right, *p;
 };
 
 typedef struct node *node_ptr;
-//Terminal Node each internal node will point to
+//Terminal Node last internal node will point to
 struct node NIL={0};
 
 //Doing normal binary search, if the element is less than root search left else search right
-node_ptr search(node_ptr root, int k) {
-if (root == &NIL || root->key == k)
+node_ptr search(node_ptr root, int id) {
+if (root == &NIL || root->key == id)
 return root;
-if (k < root->key)
-return search(root->left, k);
+if (id < root->key)
+return search(root->left, id);
 else
-return search(root->right, k);
+return search(root->right, id);
 }
 
 //find minimum element in the tree
@@ -44,7 +44,7 @@ return root;
 }
 
 //Psuedo Code from Introduction to Algorithms Thomas Corman Edition 3 Chapter 13
-//is used as reference for insert, delete operations related to  RedBlack Tree.
+//is used as reference for implementing insert, delete operations on a RedBlack Tree.
 
 //Left Rotate
 void leftrotate(node_ptr *root, node_ptr par) {
@@ -85,6 +85,7 @@ void rbinsertfixup(node_ptr *root, node_ptr new_node) {
 while (new_node->p->color == RED) {
 if (new_node->p == new_node->p->p->left) {
 node_ptr uncle = new_node->p->p->right;
+//case 1 as mentioned in Intro to Alogithm Edition 3
 if (uncle->color == RED) {
 new_node->p->color = BLACK;
 uncle->color = BLACK;
@@ -92,10 +93,12 @@ new_node->p->p->color = RED;
 new_node = new_node->p->p;
 }
 else {
+//case 2
 if (new_node == new_node->p->right) {
 new_node = new_node->p;
 leftrotate(root,new_node);
 }
+//case 3
 new_node->p->color = BLACK;
 new_node->p->p->color = RED;
 rightrotate(root,new_node->p->p);
@@ -109,6 +112,7 @@ uncle->color = BLACK;
 new_node->p->p->color = RED;
 new_node = new_node->p->p;
 }
+//same case as above with right and left pointers exchanged
 else {
 if (new_node == new_node->p->left) {
 new_node = new_node->p;
@@ -150,6 +154,7 @@ tmp->color = RED;
 rbinsertfixup(root,tmp);
 }
 
+//transplant utility function as discussed in Intro to Alogithm
 void rbtransplant(node_ptr *root, node_ptr u, node_ptr v) {
 if (u->p == &NIL)
 *root = v;
@@ -165,23 +170,27 @@ void rbdeletefixup(node_ptr *root, node_ptr node_fix) {
 while (node_fix != *root && node_fix->color == BLACK) {
 if (node_fix == node_fix->p->left) {
 node_ptr sibling = node_fix->p->right;
+//case 1 as discussed in Intro to Alogithm
 if (sibling->color == RED) {
 sibling->color = BLACK;
 node_fix->p->color = RED;
 leftrotate(root,node_fix->p);
 sibling = node_fix->p->right;
 }
+//case 2
 if (sibling->left->color == BLACK && sibling->right->color == BLACK) {
 sibling->color = RED;
 node_fix = node_fix->p;
 }
 else {
+//case 3
 if (sibling->right->color == BLACK) {
 sibling->left->color = BLACK;
 sibling->color = RED;
 rightrotate(root,sibling);
 sibling = node_fix->p->right;
 }
+//case 4
 sibling->color = node_fix->p->color;
 node_fix->p->color = BLACK;
 sibling->right->color = BLACK;
@@ -237,6 +246,7 @@ node_child = tmp->left;
 rbtransplant(root,tmp,tmp->left);
 }
 else {
+//find the minimum element in right subtree
 node_old = tree_minimum(tmp->right);
 node_orig_color = node_old->color;
 node_child = node_old->right;
@@ -258,6 +268,7 @@ rbdeletefixup(root,node_child);
 
 //Increase the value of entry with key 'id' by 'value'
 void increase(node_ptr root,int id,int value) {
+//search for a node with key id
 node_ptr tmp=search(root,id);
 node val={0};
 val.key=id;
@@ -276,6 +287,7 @@ cout << tmp->count<<"\n";
 
 //Reduces the value of entry with key 'id' by 'value'
 void reduce(node_ptr root,int id,int value) {
+//search for a node with key id
 node_ptr tmp = search(root,id);
 if(tmp == &NIL) {
 cout << 0 << "\n";
@@ -292,6 +304,7 @@ cout<< tmp->count << "\n";
 
 //Function returns the count of entry with key 'id', basically a get function
 void count(node_ptr root,int id) {
+//search for a node with key id
 node_ptr tmp = search(root,id);
 if(tmp == &NIL) {
 cout << 0 << "\n";
@@ -392,6 +405,7 @@ cout << count << "\n";
 //color last level as red as it will be the only one which is partially filled
 void color_tree(node *root,int level,int num) {
 if(root == &NIL) return;
+//if level is the last level
 if(level == ceil(log2((double)num+1))-1) root->color = RED;
 //Go Left
 color_tree(root->left,level+1,num);
