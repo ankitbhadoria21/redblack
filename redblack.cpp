@@ -392,7 +392,7 @@ cout << count << "\n";
 //color last level as red as it will be the only one which is partially filled
 void color_tree(node *root,int level,int num) {
 if(root == &NIL) return;
-if(level == ceil(log2((double)num))) root->color = RED;
+if(level == ceil(log2((double)num+1))-1) root->color = RED;
 //Go Left
 color_tree(root->left,level+1,num);
 //Go Right
